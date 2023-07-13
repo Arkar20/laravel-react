@@ -1,13 +1,18 @@
 import React from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import TextInput from "@/Components/TextInput";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
+import { useForm } from "@inertiajs/react";
+export default function Permission({ auth ,permissions,roles}) {
+    console.log("🚀 ~ file: Permission.jsx:8 ~ Permission ~ permissions:", permissions)
+    const { data, setData, post, errors, processing, recentlySuccessful } = useForm();
 
-export default function Permission({ auth ,permissions}) {
-console.log("🚀 ~ file: Permission.jsx:9 ~ Permission ~ permissions:", permissions)
+    const submit = (e) => {
+        e.preventDefault();
 
+        post(route('permission.create'));
+    };
     
     return (
         <AuthenticatedLayout
@@ -31,35 +36,33 @@ console.log("🚀 ~ file: Permission.jsx:9 ~ Permission ~ permissions:", permiss
                                     Please Assign Permission to the Role
                                 </p>
                             </header>
-                            <form className="mt-6 space-y-6">
+                            <form className="mt-6 space-y-6" onSubmit={submit}>
                                 <div>
                                     <InputLabel
                                         htmlFor="role"
                                         value="Select Role"
                                     />
 
-                                    <select className="w-full" id="role">
-                                        <option value="">Admin</option>
-                                        <option value="">User</option>
-                                        <option value="">Employee</option>
+                                    <select className="w-full" id="role" value={data.role_id} onChange={(e)=>setData('role_id',e.target.value)}>
+                                        {
+                                            roles ? roles.map(role=> <option value={role.id} key={role.id}>{role.name}</option>) : ""
+                                        }
                                     </select>
 
                                     <InputError className="mt-2" />
                                 </div>
                                 <div>
-                                    <InputLabel htmlFor="name" value="Name" />
+                                    <InputLabel htmlFor="permission" value="Name" />
 
-                                    <TextInput
-                                        id="name"
-                                        className="mt-1 block w-full"
-                                        required
-                                        isFocused
-                                        autoComplete="name"
-                                    />
+                                    <select className="w-full" id="permission" value={data.permission} onChange={(e)=>setData('permission',e.target.value)}>
+                                        {
+                                            permissions ? permissions.map((permission,index)=> <option value={permission.value} key={index}>{permission.label}</option>) : ""
+                                        }
+                                    </select>
 
                                     <InputError className="mt-2" />
                                 </div>
-                                <PrimaryButton disabled={false}>
+                                <PrimaryButton disabled={processing}>
                                     Save
                                 </PrimaryButton>
                             </form>

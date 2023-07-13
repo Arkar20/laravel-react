@@ -23,7 +23,8 @@ case CAN_UPDATE_USER = 'can_update_user';
     public static function choices()
     {
         return collect(static::cases())->map(function ($case) {
-            return [$case->name => $case->label()];
+            return ['value' => $case->value,
+                'label' => $case->label()];
         });
     }
 }
