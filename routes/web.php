@@ -9,6 +9,8 @@ use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Models\User;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,7 +74,7 @@ Route::post('/roles/create', function (Request $request) {
     
 })->name('role.create');
 
-Route::get('/users',fn()=>inertia('User/Index'))->name('user');
+Route::get('/users',[UserController::class,'index'])->name('user');
 
 Route::get('/users/create', [RegisteredUserController::class, 'create'])
 ->name('user.create');
