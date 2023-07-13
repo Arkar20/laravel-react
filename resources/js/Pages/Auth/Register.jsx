@@ -8,12 +8,13 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import FormContainer from "@/Components/FormContainer";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-export default function Register({ roles ,auth }) {
+export default function Register({ roles, auth }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         email: "",
         password: "",
         password_confirmation: "",
+        role_id: roles.length > 0 ? roles[0].id : null,
     });
 
     useEffect(() => {
@@ -24,12 +25,11 @@ export default function Register({ roles ,auth }) {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route("user.store"));
     };
 
     return (
-        <AuthenticatedLayout  user={auth.user}>
+        <AuthenticatedLayout user={auth.user}>
             <Head title="Register" />
 
             <FormContainer>

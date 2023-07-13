@@ -29,18 +29,17 @@ class RegisteredUserController extends Controller
         ]);
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request): RedirectResponse
+  
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role_id'=>['required', 'exists:roles,id']
         ]);
+
+        $role=Role::findOrFail($request->role_id);
 
         $user = User::create([
             'name' => $request->name,
@@ -48,10 +47,11 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        $user->assignRole($role);
 
-        Auth::login($user);
+         event(new Registered($user));
 
-        return redirect(RouteServiceProvider::HOME);
+
+        return to_route('user');
     }
 }

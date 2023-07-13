@@ -77,6 +77,9 @@ Route::get('/users',fn()=>inertia('User/Index'))->name('user');
 Route::get('/users/create', [RegisteredUserController::class, 'create'])
 ->name('user.create');
 
+Route::post('/users/create',[RegisteredUserController::class, 'store'])
+->name('user.store');
+
 
 
 Route::middleware('auth')->group(function () {
