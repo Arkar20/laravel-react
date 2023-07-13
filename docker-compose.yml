@@ -1,0 +1,108 @@
+version: '3.0'
+
+networks:
+ laravel-react:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx_server
+    ports:
+      - "8088:80"
+    volumes:
+      - ./:/var/www/html
+      -  ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mysql
+    networks: 
+      - laravel-react
+
+  mysql:
+    platform: linux/x86_64  #for apple silicon
+    image: mysql:5.7
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "4066:3306"
+    volumes:
+      - ./docker/mysql_data:/var/lib/mysql
+    environment:
+       MYSQL_DATABASE: laravel_react
+       MYSQL_USER:  arkar
+       MYSQL_PASSWORD:  password
+       MYSQL_ROOT_PASSWORD:  secret
+       SERVICE_TAGS: dev
+       SERVICE_NAME: mysql
+    networks: 
+      - laravel-react
+      
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "9000:9000"
+    container_name: php
+    networks: 
+      - laravel-react
+
+  composer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: composer
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['composer']
+    networks: 
+      - laravel-react
+    
+  npm:
+    image: node:16-alpine
+    container_name: npm
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['npm']
+    networks:
+      - laravel-react
+
+  artisan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aritsan
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    entrypoint: ['/var/www/html/artisan']
+    networks:
+      - laravel-react
+  
+  redis:
+    image: redis:4.0
+    container_name: app_redis
+    ports:
+      - "6382:6379"
+    networks:
+      - laravel-react
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    command:  php artisan queue:work
+    container_name: queue-worker
+    networks: 
+      - laravel-react
