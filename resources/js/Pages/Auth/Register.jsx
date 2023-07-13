@@ -29,7 +29,11 @@ export default function Register({ roles, auth }) {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user}  header={
+            <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                Create New User
+            </h2>
+        }>
             <Head title="Register" />
 
             <FormContainer>
@@ -134,8 +138,8 @@ export default function Register({ roles, auth }) {
                         </select>
                     </div>
 
-                    <div className="flex items-center justify-end mt-4">
-                        <PrimaryButton className="ml-4" disabled={processing}>
+                    <div className="mt-4">
+                        <PrimaryButton  disabled={processing}>
                             Register
                         </PrimaryButton>
                     </div>
