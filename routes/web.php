@@ -77,6 +77,8 @@ Route::get('/users',fn()=>inertia('User/Index'))->name('user');
 Route::get('/users/create', [RegisteredUserController::class, 'create'])
 ->name('user.create');
 
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
