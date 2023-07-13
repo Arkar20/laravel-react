@@ -5,7 +5,10 @@ import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 
-export default function Permission({ auth }) {
+export default function Permission({ auth ,permissions}) {
+console.log("🚀 ~ file: Permission.jsx:9 ~ Permission ~ permissions:", permissions)
+
+    
     return (
         <AuthenticatedLayout
             user={auth.user}
