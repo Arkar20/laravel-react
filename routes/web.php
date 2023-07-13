@@ -47,7 +47,7 @@ Route::post('/permissions/create', function (Request $request) {
 
     $role=Role::findOrFail($request->role_id);
 
-    if(!$permission=Permission::where('name',$request->permission)->firstOrFail()) 
+    if(!$permission=Permission::where('name',$request->permission)->first()) 
     {
         $permission = Permission::create(['name' => $request->permission]);
     }

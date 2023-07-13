@@ -5,8 +5,11 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useForm } from "@inertiajs/react";
 export default function Permission({ auth ,permissions,roles}) {
-    console.log("🚀 ~ file: Permission.jsx:8 ~ Permission ~ permissions:", permissions)
-    const { data, setData, post, errors, processing, recentlySuccessful } = useForm();
+    
+    const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
+        role_id: roles.length ? roles[0].id : null,
+        permission: permissions.length ? permissions[0].value : null
+    });
 
     const submit = (e) => {
         e.preventDefault();
