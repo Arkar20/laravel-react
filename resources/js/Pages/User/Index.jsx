@@ -55,7 +55,7 @@ export default function User({ auth, users, roles, departments, query }) {
                         ? user.roles.map((role) => role.name)
                         : "-"}
                 </td>
-                <td>{user.department.name}</td>
+                <td>{user.department?.name}</td>
             </tr>
         ));
 
