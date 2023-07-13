@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +71,11 @@ Route::post('/roles/create', function (Request $request) {
     return back();
     
 })->name('role.create');
+
+Route::get('/users',fn()=>inertia('User/Index'))->name('user');
+
+Route::get('/users/create', [RegisteredUserController::class, 'create'])
+->name('user.create');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

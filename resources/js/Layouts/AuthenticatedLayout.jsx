@@ -30,6 +30,9 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('role')} active={route().current('role')}>
                                     Roles
                                 </NavLink>
+                                <NavLink href={route('user')} active={route().current('user')}>
+                                    Users
+                                </NavLink>
                             </div>
                         </div>
 
