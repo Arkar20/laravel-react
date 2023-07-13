@@ -5,10 +5,10 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import FormContainer from "@/Components/FormContainer";
 import Table from "@/Components/Table";
 
-export default function User({ auth, users, roles }) {
- 
+export default function User({ auth, users, roles, departments }) {
+    console.log("🚀 ~ file: Index.jsx:9 ~ User ~ users:", users);
     const tBody = () =>
-        users.map((user) => (
+        users.data.map((user) => (
             <>
                 {" "}
                 <tr>
@@ -19,11 +19,11 @@ export default function User({ auth, users, roles }) {
                             ? user.roles.map((role) => role.name)
                             : "-"}
                     </td>
+                    <td>{user.department.name}</td>
                 </tr>
             </>
         ));
 
-        
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -67,10 +67,7 @@ export default function User({ auth, users, roles }) {
                                 <th className="px-2 py-0 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider ">
                                     <span>Role</span>
                                     <br />
-                                    <select
-                                        className="w-full"
-                                        id="role"
-                                    >
+                                    <select id="role">
                                         {roles
                                             ? roles.map((role) => (
                                                   <option
@@ -86,10 +83,18 @@ export default function User({ auth, users, roles }) {
                                 <th className="px-2 py-0 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider ">
                                     <span>Department</span>
                                     <br />
-                                    <input
-                                        type="text"
-                                        placeholder="Search By Name"
-                                    />
+                                    <select id="role">
+                                        {departments
+                                            ? departments.map((department) => (
+                                                  <option
+                                                      value={department.id}
+                                                      key={department.id}
+                                                  >
+                                                      {department.name}
+                                                  </option>
+                                              ))
+                                            : ""}
+                                    </select>
                                 </th>
                                 <th className="px-2 py-0 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider ">
                                     <span>Actions</span>
@@ -99,6 +104,16 @@ export default function User({ auth, users, roles }) {
                     }}
                     renderTbody={tBody}
                 />
+
+                {/* pagination  */}
+                <ul className="inline-flex mt-8 border">
+                    {users &&
+                        users.links.map((link,index) => (
+                            <li key={index} className={ link.active ? "bg-gray-300 px-3 py-1" :" px-3 py-1"} >
+                                <Link href={link.url} className={`${!link.url?'cursor-not-allowed text-gray-400':''}` }disabled={true}  dangerouslySetInnerHTML={{__html: link.label}}></Link>
+                            </li>
+                        ))}
+                </ul>
             </FormContainer>
         </AuthenticatedLayout>
     );
