@@ -4,7 +4,7 @@ import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 import { Head } from '@inertiajs/react';
 
-export default function Edit({ auth, mustVerifyEmail, status }) {
+export default function Edit({ auth, mustVerifyEmail, status,roles }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -18,6 +18,7 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
+                            roles={roles}
                             className="max-w-xl"
                         />
                     </div>
