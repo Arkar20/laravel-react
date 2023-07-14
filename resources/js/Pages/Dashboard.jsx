@@ -91,9 +91,10 @@ export default function Dashboard({
                     </button>
                 </form>
 
-                <h3 className="font-semibold text-2xl">Results</h3>
+                <h3 className="font-semibold text-2xl mt-8">Results</h3>
                 <ul>
-                    {fb_data &&
+                    {fb_data && fb_data.error && <p className="text-red-800">{fb_data.error.message}</p> }
+                    {fb_data && !fb_data.error && fb_data.adaccounts &&
                         fb_data.adaccounts.data.map((data, index) => {
                             return <li key={index}>{data.name}</li>;
                         })}
