@@ -76,7 +76,7 @@ export default function Dashboard({
                 </h1>
                 <p>
                     You need to provide your facebook app access token of the
-                    page and we will provide you the information{" "}
+                    acc/page and we will provide you the information{" "}
                 </p>
                 <form onSubmit={handleSubmit} className="mt-4">
                     <input
