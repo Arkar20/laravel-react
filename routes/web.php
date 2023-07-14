@@ -3,17 +3,17 @@
 use App\Enums\PermissionsEnum;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserExcelExportController;
-use App\Models\User;
+use App\Models\Order;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use App\Models\Order;
-use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,21 +35,32 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
+Route::get('/dashboard', function (Request $request) {
     $date = \Carbon\Carbon::today()->subDays(30);
 
-    $purchases=Order::where('type','purchase')->where('created_at','>=',$date);
+    $purchases = Order::where('type', 'purchase')->where('created_at', '>=', $date);
 
-    $sales=Order::where('type','sale')->where('created_at','>=',$date);
+    $sales = Order::where('type', 'sale')->where('created_at', '>=', $date);
 
-    $total_purchase=$purchases->sum('total_cost');
+    $total_purchase = $purchases->sum('total_cost');
 
-    $total_sale=$sales->sum('total_cost');
+    $total_sale = $sales->sum('total_cost');
 
-    return Inertia::render('Dashboard',[
-        'total_purchase'=> $total_purchase,
-        'total_sale'=>$total_sale,
-        'date'=> 30
+    $token = $request->get('token');
+
+    $response = [];
+
+    if ($token) {
+        $response = Http::get("https://graph.facebook.com/v17.0/me?fields=adaccounts%7Bname%2Cid%7D&access_token={$token}");
+
+        $response=$response->json();
+    }
+
+    return Inertia::render('Dashboard', [
+        'total_purchase' => $total_purchase,
+        'total_sale' => $total_sale,
+        'date' => 30,
+        'fb_data' => $response,
     ]);
 
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -78,11 +89,11 @@ Route::post('/permissions/create', function (Request $request) {
 
 })->name('permission.create');
 
-Route::get('/roles', [RoleController::class,'index'])->name('role');
+Route::get('/roles', [RoleController::class, 'index'])->name('role');
 
-Route::post('/roles/create',[RoleController::class,'store'])->name('role.create');
+Route::post('/roles/create', [RoleController::class, 'store'])->name('role.create');
 
-Route::delete('/roles/{id}', [RoleController::class,'destroy'])->name('role.delete');
+Route::delete('/roles/{id}', [RoleController::class, 'destroy'])->name('role.delete');
 
 Route::get('/users', [UserController::class, 'index'])->name('user');
 

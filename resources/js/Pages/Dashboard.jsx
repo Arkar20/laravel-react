@@ -1,18 +1,27 @@
+import FormContainer from "@/Components/FormContainer";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
+import { useState } from "react";
 
-export default function Dashboard({ auth, total_sale, total_purchase, date }) {
-    console.log("🚀 ~ file: Dashboard.jsx:5 ~ Dashboard ~ date:", date);
-    console.log(
-        "🚀 ~ file: Dashboard.jsx:5 ~ Dashboard ~ total_purchase:",
-        total_purchase
-    );
-    console.log(
-        "🚀 ~ file: Dashboard.jsx:5 ~ Dashboard ~ total_sale:",
-        total_sale
-    );
+export default function Dashboard({
+    auth,
+    total_sale,
+    total_purchase,
+    date,
+    fb_data,
+}) {
 
+    const [token, setToken] = useState(
+        "EAAD6QxWUiPUBAGg0Nf5KZC5o1dfJdXszZASZAaO7OYzrjknZAsZBmv8TeizZBB2VZBtjNqrBmuUiWtv8HoyzVi21GxzpnZCOHFsbC8N0cSbqIz5VHTg4RCPLctqCUZCXYRKqBgmcSLjucxRZCRlZBZBnExBfw1zuBzxviUiP10FcPXj0UeIHllPnuRgWMejBlErkFXwZD"
+    );
     const result = total_sale - total_purchase;
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        router.get(route("dashboard"), {
+            token,
+        });
+    };
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -46,13 +55,50 @@ export default function Dashboard({ auth, total_sale, total_purchase, date }) {
                                 </li>
                                 <li>Left : {result}MMK</li>
                                 <li>
-                                    {result < 0 ?<p className="text-red-600">You are losing</p>:<p className="text-green-600">Congrats You make profits</p>}
+                                    {result < 0 ? (
+                                        <p className="text-red-600">
+                                            You are losing
+                                        </p>
+                                    ) : (
+                                        <p className="text-green-600">
+                                            Congrats You make profits
+                                        </p>
+                                    )}
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
+            <FormContainer>
+                <h1 className="text-2xl font-semibold">
+                    This is the connection with the Facebook Marketing Api
+                </h1>
+                <p>
+                    You need to provide your facebook app access token of the
+                    page and we will provide you the information{" "}
+                </p>
+                <form onSubmit={handleSubmit} className="mt-4">
+                    <input
+                        type="text"
+                        className="w-full"
+                        value={token}
+                        onChange={(e) => setToken(e.target.value)}
+                    />
+
+                    <button className="px-4 py-1 bg-gray-900 rounded-lg text-white mt-6">
+                        Submit
+                    </button>
+                </form>
+
+                <h3 className="font-semibold text-2xl">Results</h3>
+                <ul>
+                    {fb_data &&
+                        fb_data.adaccounts.data.map((data, index) => {
+                            return <li key={index}>{data.name}</li>;
+                        })}
+                </ul>
+            </FormContainer>
         </AuthenticatedLayout>
     );
 }
