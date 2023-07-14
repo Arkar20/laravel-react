@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Models\Order;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,16 +78,11 @@ Route::post('/permissions/create', function (Request $request) {
 
 })->name('permission.create');
 
-Route::get('/roles', function () {
-    return inertia('Role');
-})->name('role');
+Route::get('/roles', [RoleController::class,'index'])->name('role');
 
-Route::post('/roles/create', function (Request $request) {
-    Role::create(['name' => $request->role]);
+Route::post('/roles/create',[RoleController::class,'store'])->name('role.create');
 
-    return back();
-
-})->name('role.create');
+Route::delete('/roles/{id}', [RoleController::class,'destroy'])->name('role.delete');
 
 Route::get('/users', [UserController::class, 'index'])->name('user');
 
