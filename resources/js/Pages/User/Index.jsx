@@ -77,7 +77,9 @@ export default function User({ auth, users, roles, departments, query }) {
 
             <FormContainer>
                 <div className="flex mb-8">
-                    <PrimaryButton>Export To CSV</PrimaryButton>
+                    <a href={route('user.export')}>
+                        <PrimaryButton>Export To CSV</PrimaryButton>
+                    </a>
                 </div>
                 <Table
                     renderTHeader={() => {

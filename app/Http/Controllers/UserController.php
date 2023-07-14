@@ -17,6 +17,7 @@ class UserController extends Controller
             ->when($request->email, fn($query) => $query->where('email',"LIKE",'%'.$request->email.'%'))
             ->when($request->role, fn($query) => $query->whereHas('roles',fn($query1)=>$query1->where('id',$request->role)),)
             ->when($request->department, fn($query) => $query->where('department_id',$request->department))
+            ->latest()
             ->paginate(10);
 
         $roles = Role::all();

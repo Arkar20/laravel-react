@@ -11,6 +11,7 @@ use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Models\User;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserExcelExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +83,7 @@ Route::get('/users/create', [RegisteredUserController::class, 'create'])
 Route::post('/users/create',[RegisteredUserController::class, 'store'])
 ->name('user.store');
 
+Route::get('/users/export',[UserExcelExportController::class,'export'])->name('user.export');
 
 
 Route::middleware('auth')->group(function () {
