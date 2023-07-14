@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use App\Models\Order;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,22 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $date = \Carbon\Carbon::today()->subDays(30);
+
+    $purchases=Order::where('type','purchase')->where('created_at','>=',$date);
+
+    $sales=Order::where('type','sale')->where('created_at','>=',$date);
+
+    $total_purchase=$purchases->sum('total_cost');
+
+    $total_sale=$sales->sum('total_cost');
+
+    return Inertia::render('Dashboard',[
+        'total_purchase'=> $total_purchase,
+        'total_sale'=>$total_sale,
+        'date'=> 30
+    ]);
+
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/permissions', function () {
