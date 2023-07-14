@@ -1,17 +1,17 @@
 <?php
 
 use App\Enums\PermissionsEnum;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserExcelExportController;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Models\User;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserExcelExportController;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,20 +39,19 @@ Route::get('/dashboard', function () {
 
 Route::get('/permissions', function () {
 
-    $roles= Role::all();
+    $roles = Role::all();
 
     $permissions = PermissionsEnum::choices();
 
-    return inertia('Permission', ['permissions' => $permissions,'roles'=>$roles]);
+    return inertia('Permission', ['permissions' => $permissions, 'roles' => $roles]);
 
 })->name('permission');
 
 Route::post('/permissions/create', function (Request $request) {
 
-    $role=Role::findOrFail($request->role_id);
+    $role = Role::findOrFail($request->role_id);
 
-    if(!$permission=Permission::where('name',$request->permission)->first()) 
-    {
+    if (!$permission = Permission::where('name', $request->permission)->first()) {
         $permission = Permission::create(['name' => $request->permission]);
     }
 
@@ -67,24 +66,26 @@ Route::get('/roles', function () {
 })->name('role');
 
 Route::post('/roles/create', function (Request $request) {
-    $user = auth()->user();
-
-    Role::create(['name'=>$request->role]);
+    Role::create(['name' => $request->role]);
 
     return back();
-    
+
 })->name('role.create');
 
-Route::get('/users',[UserController::class,'index'])->name('user');
+Route::get('/users', [UserController::class, 'index'])->name('user');
 
-Route::get('/users/create', [RegisteredUserController::class, 'create'])
-->name('user.create');
+Route::
+    middleware('permission:' . PermissionsEnum::CAN_CREATE_USER->value)
+    ->get('/users/create', [RegisteredUserController::class, 'create'])
+    ->name('user.create');
 
-Route::post('/users/create',[RegisteredUserController::class, 'store'])
-->name('user.store');
+Route::middleware('permission:' . PermissionsEnum::CAN_CREATE_USER->value)
+    ->post('/users/create', [RegisteredUserController::class, 'store'])
+    ->name('user.store');
 
-Route::get('/users/export',[UserExcelExportController::class,'export'])->name('user.export');
-
+Route::middleware('permission:' . PermissionsEnum::CAN_EXPORT_USER->value)
+    ->get('/users/export', [UserExcelExportController::class, 'export'])
+    ->name('user.export');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

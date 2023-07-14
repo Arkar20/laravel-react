@@ -8,6 +8,7 @@ case CAN_CREATE_USER = 'can_create_user';
 case CAN_VIEW_USER = 'can_view_user';
 case CAN_DELETE_USER = 'can_delete_user';
 case CAN_UPDATE_USER = 'can_update_user';
+case CAN_EXPORT_USER = 'can_export_user';
 
     public function label()
     {
@@ -16,6 +17,7 @@ case CAN_UPDATE_USER = 'can_update_user';
             static::CAN_VIEW_USER => 'Can View Users',
             static::CAN_DELETE_USER => 'Can Delete User',
             static::CAN_UPDATE_USER => 'Can Update User',
+            static::CAN_EXPORT_USER => 'Can Export User',
         };
 
     }

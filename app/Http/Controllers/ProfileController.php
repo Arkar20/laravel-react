@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class ProfileController extends Controller
 {
@@ -19,8 +20,9 @@ class ProfileController extends Controller
     public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $request->user()->load('roles') instanceof MustVerifyEmail,
             'status' => session('status'),
+            'roles'=>Role::all(),
         ]);
     }
 
@@ -29,11 +31,20 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $request->user()->fill([
+            'name'=>$request->validated('name'),
+            'email'=>$request->validated('email'),
+        ]);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
+        $role=Role::where('id',request()->get('role_id'))->first();
+
+        if($role){
+            $request->user()->syncRoles($role);
+        }
+        
 
         $request->user()->save();
 
