@@ -4,19 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportUsers;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 
 class UserExcelExportController extends Controller
 {
-    public function export()
+    public function export(Request $request)
     {
 
-        $export = new ExportUsers();
+
         $filename = 'users' . now() . '.csv';
 
         $filePath = $filename;
 
-       return Excel::download(new ExportUsers(), $filePath);
-
+       return Excel::download(new ExportUsers($request), $filePath);
 
     }
 }

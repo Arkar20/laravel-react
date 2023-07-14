@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-
+        //todo: refactor
         $users = User::with('roles', 'department')
             ->when($request->name, fn($query) => $query->where('name',"LIKE",'%'.$request->name.'%'))
             ->when($request->email, fn($query) => $query->where('email',"LIKE",'%'.$request->email.'%'))
@@ -19,6 +19,7 @@ class UserController extends Controller
             ->when($request->department, fn($query) => $query->where('department_id',$request->department))
             ->latest()
             ->paginate(10);
+
 
         $roles = Role::all();
 
